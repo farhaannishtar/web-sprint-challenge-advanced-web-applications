@@ -18,9 +18,6 @@ export default function LoginForm(props) {
 
   const onSubmit = evt => {
     evt.preventDefault()
-    console.log("Inside onSubmit");
-    console.log("username in LoginForm: ", values.username);
-    console.log("password  in LoginForm: ", values.password);
     login({ username: values.username, password: values.password });
   }
 

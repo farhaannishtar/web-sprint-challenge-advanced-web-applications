@@ -6,22 +6,14 @@ import { axiosWithAuth } from '.././axios/index'
 
 export default function Articles(props) {
   // ✨ where are my props? Destructure them here
-  const { articles, setArticles } = props;
+  const { getArticles, articles } = props;
   // ✨ implement conditional logic: if no token exists
   // we should render a Navigate to login screen (React Router v.6)
 
   useEffect(() => {
     // ✨ grab the articles here, on first render only
-    axiosWithAuth()
-      .get("http://localhost:9000/api/articles")
-      .then(res => {
-        console.log("PRACTICE")
-        console.log(res);
-        setArticles(res.data.articles)
-      })
+    getArticles();
   }, [])
-
-  console.log(articles);
 
   return (
     // ✨ fix the JSX: replace `Function.prototype` with actual functions

@@ -7,6 +7,8 @@ import ArticleForm from './ArticleForm'
 import Spinner from './Spinner'
 import { ProtectedRoute } from './ProtectedRoute';
 import axios from 'axios';
+import { axiosWithAuth } from '.././axios/index'
+
 
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
@@ -22,6 +24,7 @@ export default function App() {
   const navigate = useNavigate()
   const redirectToLogin = () => { 
     /* ✨ implement */ 
+    navigate('/')
 
   }
   const redirectToArticles = () => { 
@@ -36,6 +39,12 @@ export default function App() {
     // and a message saying "Goodbye!" should be set in its proper state.
     // In any case, we should redirect the browser back to the login screen,
     // using the helper above.
+    if (localStorage.getItem("token")) {
+      localStorage.removeItem("token");
+      setMessage("Goodbye!")
+      redirectToLogin();
+    }
+
   }
 
   const login = ({ username, password }) => {
@@ -44,14 +53,10 @@ export default function App() {
     // and launch a request to the proper endpoint.
     // On success, we should set the token to local storage in a 'token' key,
     // put the server success message in its proper state, and redirect
-    // to the Articles screen. Don't forget to turn off the spinner!
-    console.log("WE ARE IN LOGIN IN APP.JS");
-    console.log("username in App.js", username);
-    console.log("password in App.js", password);    
+    // to the Articles screen. Don't forget to turn off the spinner!   
     setSpinnerOn(true);
     axios.post("http://localhost:9000/api/login", { "username": username, "password": password })
     .then((res) => {
-      console.log("success");
       setMessage(`Here are your articles, ${username}!`);
       localStorage.setItem('token', res.data.token);
       setSpinnerOn(false);
@@ -72,6 +77,18 @@ export default function App() {
     // If something goes wrong, check the status of the response:
     // if it's a 401 the token might have gone bad, and we should redirect to login.
     // Don't forget to turn off the spinner!
+    setSpinnerOn(true);
+    axiosWithAuth()
+      .get("http://localhost:9000/api/articles")
+      .then(res => {
+        // setMessage()
+        // console.log(res.data.articles);
+        setArticles(res.data.articles)
+        setSpinnerOn(false);
+      })
+      .catch(err => {
+        redirectToLogin();
+      })
   }
 
   const postArticle = article => {
@@ -79,6 +96,23 @@ export default function App() {
     // The flow is very similar to the `getArticles` function.
     // You'll know what to do! Use log statements or breakpoints
     // to inspect the response from the server.
+    setSpinnerOn(true);
+    axiosWithAuth()
+      .post("http://localhost:9000/api/articles", { "title": article.title, "text": article.text, "topic": article.topic})
+      .then(res => {
+        // setMessage()
+        console.log("Inside postArticle");
+        console.log(res);
+        setArticles([ 
+          ...articles,
+          res.data.article
+        ])
+        setMessage(res.data.message);
+        setSpinnerOn(false);
+      })
+      .catch(err => {
+        redirectToLogin();
+      })
   }
 
   const updateArticle = ({ article_id, article }) => {
@@ -107,8 +141,8 @@ export default function App() {
           <Route path="/articles" element={
              <ProtectedRoute>
              <>
-               <ArticleForm/>
-               <Articles articles={articles} setArticles={setArticles}/>
+               <ArticleForm currentArticleId={currentArticleId} setCurrentArticleId={setCurrentArticleId} postArticle={postArticle} />
+               <Articles getArticles={getArticles} articles={articles} />
              </>
             </ProtectedRoute>
           }
