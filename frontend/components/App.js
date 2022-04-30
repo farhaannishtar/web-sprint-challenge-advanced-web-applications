@@ -81,8 +81,7 @@ export default function App() {
     axiosWithAuth()
       .get("http://localhost:9000/api/articles")
       .then(res => {
-        // setMessage()
-        // console.log(res.data.articles);
+        setMessage(res.data.message)
         setArticles(res.data.articles)
         setSpinnerOn(false);
       })
@@ -118,6 +117,8 @@ export default function App() {
   const updateArticle = ({ article_id, article }) => {
     // ✨ implement
     // You got this!
+    console.log('Inside updateArticle: ');
+
   }
 
   const deleteArticle = article_id => {
@@ -141,8 +142,19 @@ export default function App() {
           <Route path="/articles" element={
              <ProtectedRoute>
              <>
-               <ArticleForm currentArticleId={currentArticleId} setCurrentArticleId={setCurrentArticleId} postArticle={postArticle} />
-               <Articles getArticles={getArticles} articles={articles} />
+               <ArticleForm 
+                currentArticleId={currentArticleId} 
+                setCurrentArticleId={setCurrentArticleId} 
+                postArticle={postArticle}
+                articles={articles} 
+               />
+               <Articles 
+                getArticles={getArticles} 
+                articles={articles} 
+                setArticles={setArticles} 
+                updateArticle={updateArticle} 
+                currentArticleId={currentArticleId} 
+                setCurrentArticleId={setCurrentArticleId} />
              </>
             </ProtectedRoute>
           }
