@@ -118,8 +118,25 @@ export default function App() {
     // ✨ implement
     // You got this!
     console.log('Inside updateArticle: ');
-
+    console.log("article: ", article);
+    axiosWithAuth()
+      .put(`http://localhost:9000/api/articles/${article_id}`, { "title": article.title, "text": article.text, "topic": article.topic })
+      .then(res => {
+        console.log("res in updateArticle: ", res);
+        setArticles(
+          articles.map(art => {
+            if (art.article_id === res.data.article.article_id) {
+              return res.data.article;               
+            } else {
+              return art;
+            }
+          }  
+        ))
+        setMessage(res.data.message);
+      })
+      .catch(err => console.log({err}))
   }
+
 
   const deleteArticle = article_id => {
     // ✨ implement
@@ -146,7 +163,8 @@ export default function App() {
                 currentArticleId={currentArticleId} 
                 setCurrentArticleId={setCurrentArticleId} 
                 postArticle={postArticle}
-                articles={articles} 
+                articles={articles}
+                updateArticle={updateArticle} 
                />
                <Articles 
                 getArticles={getArticles} 

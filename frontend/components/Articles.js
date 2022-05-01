@@ -23,9 +23,9 @@ export default function Articles(props) {
   }, [])
 
   const editArticle = (article_id) => {
-    console.log("ARTICLES: ", articles);
-    console.log("currentArticleId: ", currentArticleId);
-    console.log("article.article_id: ", article_id)
+    // console.log("ARTICLES: ", articles);
+    // console.log("currentArticleId: ", currentArticleId);
+    console.log("Inside Articles.js.. article.article_id: ", article_id)
     setCurrentArticleId(article_id);
   }
 
