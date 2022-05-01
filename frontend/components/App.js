@@ -140,6 +140,14 @@ export default function App() {
 
   const deleteArticle = article_id => {
     // ✨ implement
+    console.log("WE ALMOST DONE BOIS")
+    axiosWithAuth()
+      .delete(`http://localhost:9000/api/articles/${article_id}`)
+      .then(res => {
+        console.log(res);
+        setArticles(articles.filter(article => article.article_id !== article_id));
+        setMessage(res.data.message);
+      })
   }
 
   return (
@@ -172,7 +180,8 @@ export default function App() {
                 setArticles={setArticles} 
                 updateArticle={updateArticle} 
                 currentArticleId={currentArticleId} 
-                setCurrentArticleId={setCurrentArticleId} />
+                setCurrentArticleId={setCurrentArticleId} 
+                deleteArticle={deleteArticle} />
              </>
             </ProtectedRoute>
           }
