@@ -3,8 +3,6 @@ import Spinner from "./Spinner";
 
 import '@testing-library/jest-dom/extend-expect'
 import { render, fireEvent, screen, waitForElementToBeRemoved } from '@testing-library/react'
-import { BrowserRouter } from 'react-router-dom'
-import App from './App'
 
 
 // Import the Spinner component into this file and test
@@ -13,24 +11,19 @@ test('sanity', () => {
   expect(true).toBe(true)
 })
 
-test("Check for spinner after login", () => {
+test("Check for spinner after on prop is passed", () => {
   // login screen
-  render(<BrowserRouter><App /></BrowserRouter>)
-  const usernameInput = () => screen.queryByPlaceholderText('Enter username')
-  const passwordInput = () => screen.queryByPlaceholderText('Enter password')
-  const loginBtn = () => screen.queryByText('Submit credentials')
+  const { rerender } = render(
+    <Spinner on={false}/>
+  );
 
-  expect(loginBtn()).toBeDisabled()
-  fireEvent.change(usernameInput(), { target: { value: ' 12 ' } })
-  fireEvent.change(passwordInput(), { target: { value: ' 1234567 ' } })
-  expect(loginBtn()).toBeDisabled()
-  fireEvent.change(usernameInput(), { target: { value: ' 123 ' } })
-  fireEvent.change(passwordInput(), { target: { value: ' 12345678 ' } })
-  expect(loginBtn()).toBeEnabled()
+  let spinnerMessage = screen.queryByText(/Please wait.../i)
+  expect(spinnerMessage).not.toBeInTheDocument();
 
-  fireEvent.click(loginBtn())
-  const spinnerMessage = screen.queryByText(/Please wait.../i)
-  expect(spinnerMessage);
+  rerender(<Spinner on={true}/>)
+  spinnerMessage = screen.queryByText(/Please wait.../i)
+  expect(spinnerMessage).toBeInTheDocument();
+
 })
 
 
